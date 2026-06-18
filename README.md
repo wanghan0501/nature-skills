@@ -11,8 +11,8 @@
       <img width="500" alt="视频教程请关注抖音" src="https://github.com/user-attachments/assets/1eefda21-86a4-4081-96e4-d40dea9e1e7b" />
     </td>
     <td align="center">
-      <b>青创人才交流群，记得入群修改备注</b><br>
-      <img width="500" alt="5分钟内修改备注" src="https://github.com/user-attachments/assets/2e541ba8-de46-485b-9caa-608244ad2639" />
+      <b>青春中国（袁一哲）</b><br>
+      <img width="500" alt="青春中国（袁一哲）" src="assets/youth-china-yuan-yizhe.png" />
     </td>
   </tr>
 </table>
