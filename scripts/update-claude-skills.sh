@@ -8,7 +8,7 @@
 #
 # This is the manual-copy fallback. The recommended way to install for Claude
 # Code is the plugin marketplace (see README "Claude Code 安装"):
-#   /plugin marketplace add Yuan1z0825/nature-skills
+#   /plugin marketplace add wanghan0501/nature-skills
 #   /plugin install nature-skills@nature-skills
 # Use this script only if you prefer a plain copy into ~/.claude/skills/.
 #

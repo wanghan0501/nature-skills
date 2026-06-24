@@ -106,7 +106,7 @@ scripts/update-codex-skills.sh
 在 Claude Code 会话里执行：
 
 ```text
-/plugin marketplace add Yuan1z0825/nature-skills
+/plugin marketplace add wanghan0501/nature-skills
 /plugin install nature-skills@nature-skills
 ```
 
@@ -116,14 +116,14 @@ scripts/update-codex-skills.sh
 /plugin update nature-skills
 ```
 
-> 如果你是从自己的 fork 安装，请把上面的 `Yuan1z0825` 换成你的 GitHub 用户名。marketplace 的 `source: "./"` 是相对路径，仅在通过 Git 仓库（`owner/repo` 形式）添加 marketplace 时才能正确解析。
+> 上面指向本仓库 `wanghan0501/nature-skills`。上游仓库为 `Yuan1z0825/nature-skills`，如需从上游安装，把 `wanghan0501` 换成 `Yuan1z0825` 即可。marketplace 的 `source: "./"` 是相对路径，仅在通过 Git 仓库（`owner/repo` 形式）添加 marketplace 时才能正确解析。
 
 #### 方式二：手动复制到技能目录
 
 适合不使用插件系统、只想直接放技能文件的场景。Claude Code 从 `~/.claude/skills/` 加载个人技能：
 
 ```bash
-git clone https://github.com/Yuan1z0825/nature-skills.git
+git clone https://github.com/wanghan0501/nature-skills.git
 cd nature-skills
 scripts/update-claude-skills.sh
 ```
