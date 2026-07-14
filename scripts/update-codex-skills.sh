@@ -150,6 +150,11 @@ print_dependency_notes() {
   if [ -f "$SRC/nature-paper-to-patent/requirements.txt" ]; then
     notes=1
     echo "    python -m pip install -r $SRC/nature-paper-to-patent/requirements.txt"
+    if [ -f "$SRC/nature-paper-to-patent/scripts/disclosure/requirements-cnipa.txt" ]; then
+      echo "    # optional: CNIPA published-patent search"
+      echo "    python -m pip install -r $SRC/nature-paper-to-patent/scripts/disclosure/requirements-cnipa.txt"
+      echo "    python -m playwright install chromium"
+    fi
   fi
   if [ -f "$SRC/nature-academic-search/mcp-server/requirements.txt" ]; then
     notes=1

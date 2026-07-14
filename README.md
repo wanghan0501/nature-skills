@@ -1,9 +1,49 @@
-# nature-skills (面向全球AI学者收录SKILL)
+<div align="center">
+  <p>
+    <img src="assets/readme-banner-cn.png" alt="Nature Skills：面向全球学者的科研 Skill 库" width="100%">
+  </p>
+  <p>
+    <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-2ea44f"></a>
+    <a href="#安装"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw%20%7C%20OpenCode%20%7C%20Hermes-111827"></a>
+    <a href="#技能索引"><img alt="Skills" src="https://img.shields.io/badge/skills-17-0ea5e9"></a>
+    <a href="README_EN.md"><img alt="Language" src="https://img.shields.io/badge/language-中文%20%7C%20English-1f6feb"></a>
+  </p>
+  <p>
+    <a href="#安装">立即安装</a>
+    · <a href="#快速开始">快速开始</a>
+    · <a href="#技能索引">技能索引</a>
+    · <a href="docs/open-source-agent-frameworks.md">其他安装</a>
+    · <a href="#共享设计原则">设计原则</a>
+    · <a href="#新增技能">贡献方式</a>
+    · <a href="README_EN.md">English</a>
+  </p>
+</div>
+
+---
 
 * 大家好，我是 nature skills 的创立者袁一哲。感谢大家持续关注 `nature-skills`。我们在抖音更新了很多视频教程，大家可以根据名称检索查看，希望真心能够帮助到大家。
-* 如果你有任何需求，欢迎提交 issue；如果我们认为该需求有意义且可行，会尽量推进实现。我们也欢迎 PR，但请按照本文后面的贡献格式提交，方便更高效地审核与合并。
+* 如果你有任何需求，欢迎提交 issue；如果我们认为该需求有意义且可行，会尽量推进实现。我们也欢迎 PR，但请按照本文后面的贡献格式提交，并录制配套使用教程，方便更高效地审核、理解与合并。
 * 面向全球AI学者收录通用科研skill，nature-skills是skill期刊的雏形，不以讲故事假大空的科研为目标，这里只在乎能否真正解决领域问题！
 * 知识星球名称：Nature Skills以及背后的哲学！
+ <img width="300" height="400" alt="1591" src="https://github.com/user-attachments/assets/64e37909-0a48-4bfb-8471-c2aff971a0f6" />
+
+
+## 快速开始
+
+安装完成后，可以直接把论文、段落、审稿意见或任务描述交给 agent。下面这些提示词可以直接复制使用：
+
+| 想做什么 | 直接这样说 |
+| --- | --- |
+| 读论文 / 中英文对照 | `把这篇 PDF 做成图文对应的中英文对照 Markdown reader。` |
+| 生成文献汇报 PPT | `把这篇论文做成中文组会汇报 PPT，保留关键图件和来源标注。` |
+| 润色或翻译论文段落 | `把这段中文改写成 Nature 风格英文，保持学术含义不变。` |
+| 写摘要、引言或讨论 | `根据这些结果和图件，帮我起草 Nature 风格的摘要和引言。` |
+| 预投稿审稿模拟 | `从 Nature 审稿人视角评估这篇稿件，给出三份 reviewer reports。` |
+| 回复审稿意见 | `根据这封返修邮件，帮我写逐点回复、cover letter，并标出修改稿需要标红的位置。` |
+| 查文献、他引和引用者画像 | `整理这篇文章的引用数、严格他引数、DOI，并看引用者里有没有院士、Fellow 或领域大牛。` |
+| 做科研图或论文示意图 | `根据这段方法和结果，帮我生成投稿级科研图或论文示意图草稿。` |
+
+如果你不确定该用哪个技能，直接描述任务即可；如果你已经知道技能名，可以在提示词里明确写“使用 `nature-reader`”或“使用 `nature-response`”。
 
 ## 主要贡献者
 
@@ -28,10 +68,6 @@
       <img width="300" alt="635611d42c5739d8a98ea08eec010d30" src="https://github.com/user-attachments/assets/37d4b0b6-3d22-4492-bb01-c0d9bae5a9e0" />
     </td>
     <td align="center">
-      <b>知识星球50¥/年</b><br>
-      <img width="300" alt="aaa39bcfddacc2d92a5922b50b5edf46" src="https://github.com/user-attachments/assets/7a7e467a-59d4-4514-9b42-eefd01bf9591" />
-    </td> 
-    <td align="center">
       <b>Agent科研交流群</b><br>
       <img width="300" alt="Agent科研交流群" src="https://github.com/user-attachments/assets/28d1886a-69be-46bc-a1cb-777d7510ddab" />
     </td>
@@ -45,6 +81,39 @@
 `nature-skills` 是一组围绕 `SKILL.md` 组织的可复用技能包。`skills/` 下的每个顶层技能目录都是一个可安装单元，例如 `nature-*`；`skills/_shared/` 是共享内容目录，安装完整仓库时也需要保留。
 
 本仓库同时支持 **Codex**（复制到 skills 目录）与 **Claude Code**（插件 marketplace 或技能目录）两种安装方式，也兼容其他遵循 `SKILL.md` 约定的 agent。
+
+### Claude Code 安装
+
+本仓库本身就是一个 Claude Code 插件（`.claude-plugin/plugin.json`）兼插件市场（`.claude-plugin/marketplace.json`）。`skills/nature-*/SKILL.md` 会被 Claude Code 自动发现并加载，无需在清单里逐个声明。
+
+#### 方式一：插件市场（推荐）
+
+在 Claude Code 会话里执行：
+
+```text
+/plugin marketplace add wanghan0501/nature-skills
+/plugin install nature-skills@nature-skills
+```
+
+安装后，所有 nature 技能会按各自 `description` 中的触发词自动激活。需要更新时：
+
+```text
+/plugin update nature-skills
+```
+
+> 上面指向本仓库 `wanghan0501/nature-skills`。上游仓库为 `Yuan1z0825/nature-skills`，如需从上游安装，把 `wanghan0501` 换成 `Yuan1z0825` 即可。marketplace 的 `source: "./"` 是相对路径，仅在通过 Git 仓库（`owner/repo` 形式）添加 marketplace 时才能正确解析。
+
+#### 方式二：手动复制到技能目录
+
+适合不使用插件系统、只想直接放技能文件的场景。Claude Code 从 `~/.claude/skills/` 加载个人技能：
+
+```bash
+git clone https://github.com/wanghan0501/nature-skills.git
+cd nature-skills
+scripts/update-claude-skills.sh
+```
+
+该脚本只同步本仓库的技能文件夹（含 `_shared`），不会动你 `~/.claude/skills/` 里的其他技能。`PULL=1` 可先 `git pull --ff-only` 再复制，`CLAUDE_SKILLS_DIR=/path` 可覆盖目标目录。
 
 ### Codex 推荐安装方式
 
@@ -118,8 +187,11 @@ done
 
 ```bash
 python -m pip install -r skills/nature-paper-to-patent/requirements.txt
+python -m pip install -r skills/nature-paper-to-patent/scripts/disclosure/requirements-cnipa.txt  # 可选：国知局公布公告检索
 python -m pip install -r skills/nature-academic-search/mcp-server/requirements.txt
 ```
+
+如果启用 `nature-paper-to-patent` 的国知局公布公告检索，还需要执行 `python -m playwright install chromium`。
 
 `nature-academic-search` 的 MCP 服务还需要单独配置 `PUBMED_EMAIL`，Scopus / ScienceDirect 等可选 provider 需要使用本机凭据配置，不要把 API key 写入仓库文件。
 
@@ -133,39 +205,8 @@ python -m pip install -r skills/nature-academic-search/mcp-server/requirements.t
 把这篇论文做成中文PPT。
 ```
 
+如果你使用 OpenClaw、OpenCode、Hermes 等开源 agent / 编程框架，请看 [OpenClaw / OpenCode / Hermes 接入教程](docs/open-source-agent-frameworks.md)。
 
-### Claude Code 安装
-
-本仓库本身就是一个 Claude Code 插件（`.claude-plugin/plugin.json`）兼插件市场（`.claude-plugin/marketplace.json`）。`skills/nature-*/SKILL.md` 会被 Claude Code 自动发现并加载，无需在清单里逐个声明。
-
-#### 方式一：插件市场（推荐）
-
-在 Claude Code 会话里执行：
-
-```text
-/plugin marketplace add wanghan0501/nature-skills
-/plugin install nature-skills@nature-skills
-```
-
-安装后，所有 nature 技能会按各自 `description` 中的触发词自动激活。需要更新时：
-
-```text
-/plugin update nature-skills
-```
-
-> 上面指向本仓库 `wanghan0501/nature-skills`。上游仓库为 `Yuan1z0825/nature-skills`，如需从上游安装，把 `wanghan0501` 换成 `Yuan1z0825` 即可。marketplace 的 `source: "./"` 是相对路径，仅在通过 Git 仓库（`owner/repo` 形式）添加 marketplace 时才能正确解析。
-
-#### 方式二：手动复制到技能目录
-
-适合不使用插件系统、只想直接放技能文件的场景。Claude Code 从 `~/.claude/skills/` 加载个人技能：
-
-```bash
-git clone https://github.com/wanghan0501/nature-skills.git
-cd nature-skills
-scripts/update-claude-skills.sh
-```
-
-该脚本只同步本仓库的技能文件夹（含 `_shared`），不会动你 `~/.claude/skills/` 里的其他技能。`PULL=1` 可先 `git pull --ff-only` 再复制，`CLAUDE_SKILLS_DIR=/path` 可覆盖目标目录。
 
 ### 目录结构
 
@@ -179,19 +220,29 @@ scripts/update-claude-skills.sh
 │   └── update-claude-skills.sh   # 复制技能到 ~/.claude/skills/
 └── skills/
     ├── _shared/              # 当技能引用 ../_shared 时需要保留
-    └── nature-<topic>/
+    ├── nature-<topic>/
+    │   ├── README.md
+    │   ├── README_EN.md
+    │   ├── SKILL.md
+    │   ├── manifest.yaml     # router-style 技能会包含
+    │   ├── static/           # router-style 技能会包含
+    │   └── references/...
+    └── nature-proposal-writer/
         ├── README.md
+        ├── README_EN.md
         ├── SKILL.md
-        ├── manifest.yaml     # router-style 技能会包含
-        ├── static/           # router-style 技能会包含
+        ├── scripts/...
+        ├── templates/...
         └── references/...
 ```
 
-### 其他 agent
+### 其他 agent 场景
 
-用于 Claude Code 或其他 agent 时，建议保留一个稳定的仓库 clone，再创建轻量 subagent、slash command 或 custom prompt wrapper，指向真实的 `skills/*/SKILL.md`，并保留 `skills/_shared/`。
+OpenClaw、OpenCode、Hermes 的具体接入方式见 [OpenClaw / OpenCode / Hermes 接入教程](docs/open-source-agent-frameworks.md)。
 
-通用规则：
+用于其他 agent 时，建议保留一个稳定的仓库 clone，再创建轻量 subagent、slash command 或 custom prompt wrapper，指向真实的 `skills/*/SKILL.md`，并保留 `skills/_shared/`。
+
+手动或其他 agent 使用时：
 
 1. 将完整技能目录复制到你的 prompt library 或项目中，保留完整目录结构（不要只复制 `SKILL.md`）。
 2. 保留 `SKILL.md`、`manifest.yaml`、`static/`、`references/`、脚本、资产和需要的 `skills/_shared/` 文件。
@@ -199,29 +250,31 @@ scripts/update-claude-skills.sh
 
 ## Star 历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Yuan1z0825/nature-skills&type=Date&cache_bust=2026-06-07T16)](https://star-history.com/#Yuan1z0825/nature-skills&Date)
+[![Star History Chart](assets/star-history.svg)](https://star-history.com/#Yuan1z0825/nature-skills&Date)
 
 ## 技能索引
 
-当前 `skills/` 下包含以下可触发技能；`skills/_shared/` 是共享内容目录，不计入技能索引。
+当前 `skills/` 下包含以下可触发技能；`skills/_shared/` 是共享内容目录，不计入技能索引。点击技能名或“详情页”可以进入每个 skill 的单独说明页面。
 
-| 技能 | 状态 | 用途 | 触发词 |
-|-------|--------|---------|-----------------|
-| [`nature-figure`](skills/nature-figure/README.md) | Stable | 面向 Nature / 高影响力期刊的 Python 或 R 投稿级科研图工作流，内置 figures4papers demo | “Nature figure”, “投稿级图片”, “publication plot”, “scientific figure”, “figures4papers” |
-| [`nature-polishing`](skills/nature-polishing/README.md) | Stable | 将学术文本润色、重构或翻译为 Nature 风格英文 | “Nature style”, “润色”, “academic writing”, “论文英文” |
-| [`nature-writing`](skills/nature-writing/README.md) | Draft | 起草 Nature 风格手稿章节，并重建论文论证 | “Nature writing”, “写摘要”, “写引言”, “manuscript draft”, “论文写作” |
-| [`nature-reviewer`](skills/nature-reviewer/README.md) | Draft | 从审稿人视角模拟 Nature 风格评审，输出三份 reviewer reports 和综合意见 | “Nature reviewer”, “预投稿评审”, “reviewer report”, “审稿人视角评估” |
-| [`nature-citation`](skills/nature-citation/README.md) | Beta | 检索严格限定在 Nature / CNS 系列的支撑文献，并导出 ENW、RIS 或 Zotero RDF | “Nature citation”, “CNS citation”, “分段引用”, “支撑文献”, “Zotero RDF” |
-| [`nature-data`](skills/nature-data/README.md) | Draft | 准备 Data Availability statement、数据仓储方案和 FAIR 检查 | “Data Availability”, “数据可用性”, “repository”, “FAIR metadata” |
-| [`nature-reader`](skills/nature-reader/README.md) | Beta | 生成带来源锚点、图文对应和中英文对照的全文 Markdown reader | “nature reader”, “全文 Markdown”, “原文对照”, “图文对应”, “全文翻译” |
-| [`nature-response`](skills/nature-response/README.md) | Beta | 起草、审查和修改逐点回复审稿人的 response letter | “response to reviewers”, “rebuttal letter”, “major revision”, “审稿意见回复” |
-| [`nature-paper2ppt`](skills/nature-paper2ppt/README.md) | Beta | 从科研论文生成中文 PPTX 文献汇报 deck | “paper PPT”, “journal club”, “paper to slides”, “论文汇报” |
-| [`nature-paper-to-patent`](skills/nature-paper-to-patent/README.md) | Beta | 从论文、技术报告或项目材料生成有证据约束的中国发明专利草稿 | “paper to patent”, “Chinese patent”, “论文转专利”, “权利要求书” |
-| [`nature-academic-search`](skills/nature-academic-search/README.md) | Beta | 多源文献检索、引用核验和参考文献管理 | “search papers”, “find articles”, “literature search”, “查文献”, “verify DOI” |
-| [`nature-downloader`](skills/nature-downloader/README.md) | Beta | 通过图书馆资源入口、Chrome 登录态和开放获取路径合法获取学术全文/PDF | “download papers”, “图书馆下载文献”, “CARSI”, “Web of Science”, “PDF 下载” |
-| [`nature-literature-pipeline`](skills/nature-literature-pipeline/README.md) | Stable | 自动化文献发现管线：多源检索、六维评分、精读推送和本地归档 | “literature pipeline”, “每日文献”, “文献推送”, “daily literature push”, “cron” |
-| [`nature-experiment-log`](skills/nature-experiment-log/README.md) | Draft | 标准化记录实验图片、语音和文字材料，生成带 YAML frontmatter 的 Obsidian 实验日志并归档原始材料 | “实验日志”, “记录实验”, “experiment log”, “Obsidian vault”, “飞书科研群” |
-| [`nature-proposal-writer`](skills/nature-proposal-writer/README.md) | Beta | proposal-first 科研写作状态机，先建立证据、论证和章节契约，再起草或审查文本 | “researchwrite”, “proposal”, “开题报告”, “研究方案”, “科研写作 QA” |
+| 技能 | 状态 | 用途 | 触发词 | 详情页 |
+|-------|--------|---------|-----------------|--------|
+| [`nature-figure`](skills/nature-figure/README.md) | Stable | 面向 Nature / 高影响力期刊的 Python 或 R 投稿级科研图工作流，内置 figures4papers demo，并支持通过 OpenRouter GPT Image 2 生成论文示意图草稿 | “Nature figure”, “投稿级图片”, “publication plot”, “scientific figure”, “figures4papers”, “论文示意图”, “GPT Image 2” | [详情](skills/nature-figure/README.md) |
+| [`nature-polishing`](skills/nature-polishing/README.md) | Stable | 将学术文本润色、重构或翻译为 Nature 风格英文 | “Nature style”, “润色”, “academic writing”, “论文英文” | [详情](skills/nature-polishing/README.md) |
+| [`nature-writing`](skills/nature-writing/README.md) | Draft | 起草 Nature 风格手稿章节，并重建论文论证 | “Nature writing”, “写摘要”, “写引言”, “manuscript draft”, “论文写作” | [详情](skills/nature-writing/README.md) |
+| [`nature-reviewer`](skills/nature-reviewer/README.md) | Draft | 从审稿人视角模拟 Nature 风格评审，输出三份 reviewer reports 和综合意见 | “Nature reviewer”, “预投稿评审”, “reviewer report”, “审稿人视角评估” | [详情](skills/nature-reviewer/README.md) |
+| [`nature-citation`](skills/nature-citation/README.md) | Beta | 检索严格限定在 Nature / CNS 系列的支撑文献，并导出 ENW、RIS 或 Zotero RDF | “Nature citation”, “CNS citation”, “分段引用”, “支撑文献”, “Zotero RDF” | [详情](skills/nature-citation/README.md) |
+| [`nature-data`](skills/nature-data/README.md) | Draft | 准备 Data Availability statement、数据仓储方案和 FAIR 检查 | “Data Availability”, “数据可用性”, “repository”, “FAIR metadata” | [详情](skills/nature-data/README.md) |
+| [`nature-statistics`](skills/nature-statistics/README.md) | Draft | 审查、改写或起草 Nature / 高影响力期刊投稿中的统计报告，覆盖样本量、独立分析单位、重复数、p 值、多重比较、效应量、置信区间、图注统计和审稿人统计意见 | “Nature statistics”, “统计审查”, “statistical analysis”, “p value”, “sample size”, “replicates”, “multiple comparisons”, “图注统计”, “统计分析小节” | [详情](skills/nature-statistics/README.md) |
+| [`nature-reader`](skills/nature-reader/README.md) | Beta | 生成带来源锚点、图文对应和中英文对照的全文 Markdown reader | “nature reader”, “全文 Markdown”, “原文对照”, “图文对应”, “全文翻译” | [详情](skills/nature-reader/README.md) |
+| [`nature-response`](skills/nature-response/README.md) | Beta | 解析返修邮件，起草、审查和修改返修 cover letter、逐点回复审稿人的 response letter、标红修改稿，并提供 LaTeX 模板 | “response to reviewers”, “rebuttal letter”, “cover letter”, “major revision”, “返修邮件”, “审稿意见回复”, “修回信”, “LaTeX 模板” | [详情](skills/nature-response/README.md) |
+| [`nature-paper2ppt`](skills/nature-paper2ppt/README.md) | Beta | 从科研论文生成中文 PPTX 文献汇报 deck | “paper PPT”, “journal club”, “paper to slides”, “论文汇报” | [详情](skills/nature-paper2ppt/README.md) |
+| [`nature-paper-to-patent`](skills/nature-paper-to-patent/README.md) | Beta | 从论文、技术报告或项目材料生成有证据约束的中国发明专利草稿，并支持专利点挖掘、查新和技术交底书迭代 | “paper to patent”, “Chinese patent”, “论文转专利”, “权利要求书”, “技术交底书”, “专利点” | [详情](skills/nature-paper-to-patent/README.md) |
+| [`nature-ref-verifier`](skills/nature-ref-verifier/README.md) | Beta | 参考文献多源交叉验证：逐字段对比作者/标题/年份/卷期/页码，标记卷年冲突、作者编造、页码偏差等 | “verify refs”, “校验文献”, “check references”, “文献验证”, “ref check” | [详情](skills/nature-ref-verifier/README.md) |
+| [`nature-academic-search`](skills/nature-academic-search/README.md) | Beta | 多源文献检索、引用核验、严格他引审计、文章引用指标表、高影响力引用者画像和参考文献管理 | “search papers”, “find articles”, “literature search”, “查文献”, “verify DOI”, “严格他引”, “文章引用表”, “引用我的文章的人有没有大牛” | [详情](skills/nature-academic-search/README.md) |
+| [`nature-downloader`](skills/nature-downloader/README.md) | Beta | 通过图书馆资源入口、Chrome 登录态和开放获取路径合法获取学术全文/PDF | “download papers”, “图书馆下载文献”, “CARSI”, “Web of Science”, “PDF 下载” | [详情](skills/nature-downloader/README.md) |
+| [`nature-literature-pipeline`](skills/nature-literature-pipeline/README.md) | Stable | 自动化文献发现管线：多源检索、六维评分、精读推送和本地归档 | “literature pipeline”, “每日文献”, “文献推送”, “daily literature push”, “cron” | [详情](skills/nature-literature-pipeline/README.md) |
+| [`nature-experiment-log`](skills/nature-experiment-log/README.md) | Draft | 标准化记录实验图片、语音和文字材料，生成带 YAML frontmatter 的 Obsidian 实验日志并归档原始材料 | “实验日志”, “记录实验”, “experiment log”, “Obsidian vault”, “飞书科研群” | [详情](skills/nature-experiment-log/README.md) |
+| [`nature-proposal-writer`](skills/nature-proposal-writer/README.md) | Beta | proposal-first 科研写作状态机，先建立证据、论证和章节契约，再起草或审查文本 | “researchwrite”, “proposal”, “开题报告”, “研究方案”, “科研写作 QA” | [详情](skills/nature-proposal-writer/README.md) |
 
 ---
 
@@ -253,9 +306,85 @@ skills/nature-<topic>/
 |------|----------|------|
 | `SKILL.md` | 必需 | frontmatter（`name`、`description`）+ 规则 + 工作流；触发后由 agent 加载 |
 | `README.md` | 必需 | 面向人的中文说明文档 |
+| `README_EN.md` | 必需 | 与中文详情页配套的英文说明文档 |
 | `references/*.md` | 复杂技能推荐 | 模块化规则文件，例如 API、设计理论、教程、图表类型等 |
 
-### 3. `SKILL.md` frontmatter 模板
+### 3. README 写作规则
+
+每个新增技能都必须同时提供 `README.md` 和 `README_EN.md`。README 是面向人的技能入口页，不是 `SKILL.md` 的重复版，也不是安装手册。它的目标是让用户在 30 秒内判断：这个 skill 能不能解决我的问题、我要给它什么、它会产出什么、边界在哪里。
+
+基本规则：
+
+- 中文 README 和英文 README 必须一一镜像：标题数量一致、顺序一致、信息点一致；英文页不要写成另一套独立模板。
+- 顶部固定为技能名、语言切换链接和一句定位说明。
+- 默认使用下面的基础结构；只有确实需要时才插入可选章节。
+- 不要在单个 skill README 中重复仓库安装教程、作者信息、变更日志、开发过程、完整文件树或大段内部实现细节。
+- 复杂规则、API 参数、长教程、脚本说明和模板索引应放进 `references/`、`static/`、`scripts/` 或 `SKILL.md`，README 只保留路标。
+- 如果技能有视觉资产，可以放一个小型预览表；不要把 README 变成大型图库或长篇技术手册。
+
+中文 README 基础结构：
+
+```markdown
+# `nature-<topic>` 技能
+
+[English](README_EN.md)
+
+一句话说明这个技能的定位、主要任务和使用边界。
+
+## 适合用它做什么
+## 典型请求
+## 你需要提供
+## 产出
+## 边界
+## 相关技能
+```
+
+英文 README 必须对应为：
+
+```markdown
+# `nature-<topic>` Skill
+
+[中文说明](README.md)
+
+One sentence describing the skill's role, main task, and usage boundary.
+
+## What To Use It For
+## Typical Requests
+## What You Need To Provide
+## Outputs
+## Boundaries
+## Related Skills
+```
+
+可选章节必须中英文同步插入，并保持相同顺序。常见可选章节包括：
+
+| 中文章节 | 英文章节 | 使用场景 |
+|----------|----------|----------|
+| `## 工作方式` | `## Workflow` | 需要解释核心流程或路由方式 |
+| `## 运行和依赖` | `## Runtime and Dependencies` | 有脚本、MCP、API key、本地配置或外部依赖 |
+| `## 示例预览` | `## Example Preview` | 有少量图件、截图或可视化资产值得展示 |
+| `## 内置参考` | `## Built-In References` | 需要指向 `references/`、`assets/` 或 demo |
+| `## 方法来源` | `## Method Sources` | 写作、审查或分析规则来自特定来源 |
+| `## 三种模式` | `## Three Modes` | 技能有清晰的 compose/revise/hybrid 等模式 |
+| `## 与 ... 的关系` | `## Relationship With ...` | 容易和另一个技能混淆，需要说明分工 |
+
+提交前至少做这些 README 检查：
+
+```bash
+git diff --check
+for d in skills/nature-*; do
+  [ -f "$d/README.md" ] && [ -f "$d/README_EN.md" ] || continue
+  rg -q '^\[English\]\(README_EN\.md\)$' "$d/README.md"
+  rg -q '^\[中文说明\]\(README\.md\)$' "$d/README_EN.md"
+  test "$(rg -c '^## ' "$d/README.md")" = "$(rg -c '^## ' "$d/README_EN.md")"
+done
+```
+
+### 4. 录制使用教程
+
+提交 PR 时，请同时录制一个简短的使用教程，说明这个 skill 解决什么问题、如何触发、需要什么输入，以及会产出什么结果。可以在 PR 描述中附上视频、录屏链接或可公开访问的教程地址。
+
+### 5. `SKILL.md` frontmatter 模板
 
 ```yaml
 ---
@@ -265,15 +394,15 @@ description: >-
 ---
 ```
 
-### 4. 更新技能索引
+### 6. 更新技能索引
 
 在上方 [技能索引](#技能索引) 表格中添加一行：
 
 ```markdown
-| [`nature-<topic>`](skills/nature-<topic>/README.md) | Draft / Stable | 一句话用途 | 触发词 |
+| [`nature-<topic>`](skills/nature-<topic>/README.md) | Draft / Stable | 一句话用途 | 触发词 | [详情](skills/nature-<topic>/README.md) |
 ```
 
-### 5. 状态标签
+### 7. 状态标签
 
 | 标签 | 含义 |
 |-------|------|
