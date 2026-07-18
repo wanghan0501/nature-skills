@@ -12,6 +12,7 @@ import json
 import math
 import os
 import pathlib
+import re
 import subprocess
 import sys
 import time
@@ -33,6 +34,16 @@ def parse_args() -> argparse.Namespace:
         "--output",
         default="assets/star-history.svg",
         help="Output SVG path.",
+    )
+    parser.add_argument(
+        "--cache-bust-readme",
+        action="append",
+        default=[],
+        metavar="PATH",
+        help=(
+            "Update the output image reference in this Markdown file with a generated "
+            "version query. Repeat for multiple README files."
+        ),
     )
     parser.add_argument(
         "--token",
@@ -205,7 +216,11 @@ def month_ticks(start: dt.date, end: dt.date, limit: int = 8) -> list[dt.date]:
     return ticks
 
 
-def generate_svg(repo: str, points: list[tuple[dt.date, int]]) -> str:
+def generate_svg(
+    repo: str,
+    points: list[tuple[dt.date, int]],
+    generated_at: dt.datetime | None = None,
+) -> str:
     start = points[0][0]
     end = points[-1][0]
     total = points[-1][1]
@@ -249,7 +264,8 @@ def generate_svg(repo: str, points: list[tuple[dt.date, int]]) -> str:
         grid.append(f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{top + plot_height}" stroke="#f3f4f6" stroke-width="1"/>')
         grid.append(f'<text x="{x:.1f}" y="{height - 38}" text-anchor="middle" font-size="12" fill="#6b7280">{html.escape(label)}</text>')
 
-    updated = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    generated_at = generated_at or dt.datetime.now(dt.timezone.utc)
+    updated = generated_at.strftime("%Y-%m-%d %H:%M UTC")
     escaped_repo = html.escape(repo, quote=True)
     total_text = f"{total:,}"
     font = "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
@@ -274,6 +290,18 @@ def generate_svg(repo: str, points: list[tuple[dt.date, int]]) -> str:
 '''
 
 
+def update_readme_cache_buster(path: pathlib.Path, output_ref: str, token: str) -> None:
+    """Version a Markdown image URL so GitHub does not reuse a stale render."""
+    original = path.read_text(encoding="utf-8")
+    pattern = re.compile(rf"{re.escape(output_ref)}(?:\?v=[A-Za-z0-9._-]+)?")
+    updated, replacements = pattern.subn(f"{output_ref}?v={token}", original)
+    if replacements == 0:
+        raise RuntimeError(f"Could not find {output_ref!r} in {path}")
+    if updated != original:
+        path.write_text(updated, encoding="utf-8")
+    print(f"Updated cache-busting reference in {path} ({replacements} occurrence(s))")
+
+
 def main() -> int:
     args = parse_args()
     if "/" not in args.repo:
@@ -283,7 +311,12 @@ def main() -> int:
     points = build_daily_points(items)
     output = pathlib.Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(generate_svg(args.repo, points), encoding="utf-8")
+    generated_at = dt.datetime.now(dt.timezone.utc)
+    output.write_text(generate_svg(args.repo, points, generated_at), encoding="utf-8")
+    cache_token = generated_at.strftime("%Y%m%dT%H%M%SZ")
+    output_ref = pathlib.PurePosixPath(args.output).as_posix()
+    for readme in args.cache_bust_readme:
+        update_readme_cache_buster(pathlib.Path(readme), output_ref, cache_token)
     print(f"Wrote {output} with {points[-1][1]:,} stars and {len(points):,} daily points")
     return 0
 
