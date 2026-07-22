@@ -56,13 +56,16 @@ def validate_top_readmes(triggerable_skill_count: int) -> None:
 def validate_skill_readmes(skill_dirs: list[Path]) -> None:
     for skill_dir in skill_dirs:
         name = skill_dir.name
+        manifest = skill_dir / "manifest.yaml"
         readme = skill_dir / "README.md"
         readme_en = skill_dir / "README_EN.md"
+        if not manifest.is_file():
+            fail(f"{name} is missing manifest.yaml")
         if not readme.is_file():
             fail(f"{name} is missing README.md")
         if not readme_en.is_file():
             fail(f"{name} is missing README_EN.md")
-        print(f"ok: {name} includes README.md and README_EN.md")
+        print(f"ok: {name} includes manifest.yaml, README.md, and README_EN.md")
 
 
 def main() -> int:

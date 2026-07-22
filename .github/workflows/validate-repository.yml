@@ -2,9 +2,29 @@ name: Validate repository metadata
 
 on:
   pull_request:
+    paths:
+      - 'README.md'
+      - 'README_EN.md'
+      - 'skills/**'
+      - 'scripts/validate-repository.py'
+      - 'scripts/validate-readmes.py'
+      - 'scripts/validate-readme-mirror.py'
+      - 'scripts/validate-skill-index.py'
+      - 'scripts/validate-skill-metadata.py'
+      - '.github/workflows/validate-repository.yml'
   push:
     branches:
       - main
+    paths:
+      - 'README.md'
+      - 'README_EN.md'
+      - 'skills/**'
+      - 'scripts/validate-repository.py'
+      - 'scripts/validate-readmes.py'
+      - 'scripts/validate-readme-mirror.py'
+      - 'scripts/validate-skill-index.py'
+      - 'scripts/validate-skill-metadata.py'
+      - '.github/workflows/validate-repository.yml'
 
 permissions:
   contents: read
