@@ -1923,6 +1923,7 @@ const i18n = {
     qs8Prompt: '根据这段方法和结果，帮我生成投稿级科研图或论文示意图草稿。',
 
     skillNatureReaderDesc: '生成带来源锚点、图文对应和中英文对照的全文 Markdown reader，支持 PDF 精准翻译。',
+    skillNaturePaperCardDesc: '精读单篇论文并生成有来源约束的 01–16 节 Paper Card，覆盖证据链、结论边界和可检验研究想法。',
     skillNaturePolishingDesc: '将学术文本润色、重构或翻译为 Nature 风格英文，保持学术含义完全不变。',
     skillNatureWritingDesc: '起草 Nature 风格手稿章节，基于证据和论证重建论文的学术逻辑。',
     skillNatureProposalWriterDesc: 'proposal-first 科研写作状态机，先建立证据和论证契约，再起草或审查文本。',
@@ -1941,6 +1942,7 @@ const i18n = {
     skillNatureExperimentLogDesc: '标准化记录实验材料，生成带 YAML frontmatter 的 Obsidian 实验日志并归档原始材料。',
 
     skillTriggerNatureReader: ['nature reader', '全文 Markdown', '图文对应', '全文翻译'],
+    skillTriggerNaturePaperCard: ['nature paper card', '论文精读', 'Paper Card', '证据链'],
     skillTriggerNaturePolishing: ['Nature style', '润色', 'academic writing', '论文英文'],
     skillTriggerNatureWriting: ['Nature writing', '写摘要', '写引言', 'manuscript draft'],
     skillTriggerNatureProposalWriter: ['researchwrite', 'proposal', '开题报告', '研究方案'],
@@ -2081,6 +2083,7 @@ const i18n = {
     qs8Prompt: 'Use this method and result description to draft a publication-ready scientific figure or manuscript schematic.',
 
     skillNatureReaderDesc: 'Generate a full-text Markdown reader with source anchors, figure-text alignment, and Chinese-English bilingual output with precise PDF translation.',
+    skillNaturePaperCardDesc: 'Deep-read one paper into a source-grounded Sections 01–16 Paper Card covering evidence chains, conclusion boundaries, and testable research ideas.',
     skillNaturePolishingDesc: 'Polish, restructure, or translate academic text into Nature-style English while preserving academic meaning completely.',
     skillNatureWritingDesc: 'Draft Nature-style manuscript sections, reconstructing the paper\'s academic logic based on evidence and argumentation.',
     skillNatureProposalWriterDesc: 'A proposal-first research writing state machine: establish evidence, argumentation, and section contracts before drafting or reviewing text.',
@@ -2099,6 +2102,7 @@ const i18n = {
     skillNatureExperimentLogDesc: 'Standardize recording of experimental materials, generate Obsidian experiment logs with YAML frontmatter, and archive raw materials.',
 
     skillTriggerNatureReader: ['nature reader', 'full-text Markdown', 'figure-aware', 'bilingual translation'],
+    skillTriggerNaturePaperCard: ['nature paper card', 'deep-read paper', 'Paper Card', 'evidence chain'],
     skillTriggerNaturePolishing: ['Nature style', 'polishing', 'academic writing', 'manuscript English'],
     skillTriggerNatureWriting: ['Nature writing', 'abstract draft', 'introduction draft', 'manuscript draft'],
     skillTriggerNatureProposalWriter: ['researchwrite', 'proposal', 'research plan', 'grant writing'],
@@ -2383,6 +2387,7 @@ function setLanguage(lang) {
    ============================================ */
 const skillsDataDefs = [
   { id: 'nature-reader',              status: 'beta',   category: 'reading',    descKey: 'skillNatureReaderDesc',              triggersKey: 'skillTriggerNatureReader',              link: 'skills/nature-reader/README.md' },
+  { id: 'nature-paper-card',          status: 'beta',   category: 'reading',    descKey: 'skillNaturePaperCardDesc',           triggersKey: 'skillTriggerNaturePaperCard',           link: 'skills/nature-paper-card/README.md' },
   { id: 'nature-polishing',           status: 'stable', category: 'writing',    descKey: 'skillNaturePolishingDesc',           triggersKey: 'skillTriggerNaturePolishing',           link: 'skills/nature-polishing/README.md' },
   { id: 'nature-writing',             status: 'draft',  category: 'writing',    descKey: 'skillNatureWritingDesc',             triggersKey: 'skillTriggerNatureWriting',             link: 'skills/nature-writing/README.md' },
   { id: 'nature-proposal-writer',     status: 'beta',   category: 'writing',    descKey: 'skillNatureProposalWriterDesc',      triggersKey: 'skillTriggerNatureProposalWriter',      link: 'skills/nature-proposal-writer/README.md' },
