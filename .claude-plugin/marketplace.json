@@ -10,7 +10,7 @@
       "name": "nature-skills",
       "source": "./",
       "description": "Nature-style academic research toolkit. Bundles every skill under skills/nature-*/SKILL.md plus skills/_shared. Use for literature search, citations, publication figures, manuscript drafting/polishing, peer-review simulation, response letters, full-text readers, and paper-to-PPT/patent conversion.",
-      "version": "1.2.3",
+      "version": "1.2.4",
       "author": {
         "name": "wanghan0501",
         "url": "https://github.com/wanghan0501"
