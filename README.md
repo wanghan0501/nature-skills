@@ -50,7 +50,7 @@
 
 ### 1.2 知识星球
 
-知识星球名称：**Nature Skills 以及背后的哲学**。
+知识星球名称：**Nature Skills 以及背后的哲学**，以加入知识星球代替打赏。
 
 <img width="300" height="400" alt="Nature Skills 知识星球" src="https://github.com/user-attachments/assets/64e37909-0a48-4bfb-8471-c2aff971a0f6" />
 
@@ -615,4 +615,4 @@ description: >-
 
 ## 8. Star 历史
 
-[![Star History Chart](assets/star-history-20260804T032829Z.svg)](https://star-history.com/#Yuan1z0825/nature-skills&Date)
+[![Star History Chart](assets/star-history-20260808T074243Z.svg)](https://star-history.com/#Yuan1z0825/nature-skills&Date)
