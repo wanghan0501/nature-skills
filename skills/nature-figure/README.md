@@ -8,11 +8,13 @@
 
 - 根据数据、图注或论文结论生成 Python / R 绘图脚本和可编辑图件。
 - 将已有图件重画为更清楚的多面板论文 figure。
+- 按“一张 Figure 回答一个 Results 级科学问题”的默认逻辑规划多面板证据链，让各 panel 分别承担主证据、control、正交验证、扰动、机制或边界等不同推理角色，而不是只把同一结果换指标重画。
 - 规划 Figure 1、机制图、workflow、graphical abstract 或补充图。
 - 检查面板标签、配色与视觉层级、逐面板误差线、最终 PDF 实际字号、统计标注、source data 和导出格式。
 - 区分旗舰 `Nature` 初投稿、主图终稿和 Extended Data 的文件契约，并执行 `<250` 词图注上限。
-- 对 `Nature Machine Intelligence` 单独执行 6 个主 display、最多 10 个 Extended Data、初投稿/终稿边界、300 dpi/180 mm 和 source data 要求；不虚构 NMI 图注字数上限。
+- 对 `Nature Machine Intelligence` 单独执行 6 个主 display、最多 10 个 Extended Data、初投稿/终稿边界、300 dpi/180 mm 和 source data 要求；当前官网未给独立图注数字，保留 2018 官方 `<300` 英文词为历史建议线，整张图注建议 150–250 词且不是每个 panel 分别计算。
 - 在用户明确要求时，通过 OpenRouter Images API 调用 `openai/gpt-image-2` 生成 AI 概念示意图草稿。
+- 对 AI 辅助 graphical abstract 先定义单一中心信息、图件类型、目标读者和证据边界，再比较构图与可访问配色；投稿前单独核验目标期刊最新 AI 政策、科学准确性、版权、披露和 provenance。`Nature Careers` 专栏仅作为实践建议，不等于投稿许可。
 
 ## 工作方式
 
@@ -20,6 +22,7 @@
 
 - 核心结论：这张图要证明什么。
 - 证据层级：哪些面板是主证据，哪些是补充解释。
+- 多面板架构：先写 figure-level claim，再决定每个 panel 的独特证据角色以及主图、另一张图或 Extended Data/SI 的去向。
 - 图件原型：散点、箱线、热图、机制图、流程图、多面板组合等。
 - 后端选择：Python 或 R；第一次选择后会作为默认偏好复用。
 - 数据完整性：默认保留全部观测和指定变量，任何排除都记录规则与前后计数。
@@ -58,10 +61,13 @@
 
 - `references/api.md`：Python 配色、样式和绘图 helper 约定。
 - `references/asset-adaptation.md`：模板语义匹配、字段映射和数据完整性规则。
+- `references/multipanel-evidence-architecture.md`：从 Results 级问题到 panel 证据角色、图内闭环、跨 Figure claim escalation 和主图/Extended Data/SI 去向的规划与审计。
 - `references/template-catalog.md`：volcano、ROC、marker dot plot、marginal 和 paired 的已验证 Python CSV 模板。
 - `references/chart-types.md`：常见图型选择和视觉规则。
 - `references/demos.md`：第三方 `figures4papers` 示例索引、使用边界和原创适配模式。
 - `references/qa-contract.md`：导出前检查项、source-data 约束和静态预检入口。
+- `references/ai-graphical-abstract-workflow.md`：AI 图形摘要的信息简报、构图与配色、期刊政策门、人工科学核验、披露和 provenance 工作流。
+- `references/openrouter-image-generation.md`：OpenRouter / GPT Image 2 的 provider-specific 生成与 QA 路径。
 - `scripts/validate_figure.py`：Python/R 绘图源码的可复现静态 QA。
 - `scripts/audit_pdf_text.py`：扫描导出 PDF 的 `Tf` 操作符，发现 mathtext 上下标等低于 5 pt 的实际字形。
 - `scripts/figure_safety.py`：严格单调插值和基于数据/误差范围的标签高度 helper。
@@ -70,6 +76,7 @@
 ## 边界
 
 - 不会把 AI 生成图片当作真实实验结果或定量数据面板。
+- 不会把内部可用的 AI 草稿自动称为可投稿终稿；两者分别判定。
 - 不会凭空补统计检验、样本量、误差线含义或实验条件。
 - 不会为了渲染方便静默抽样、忽略变量或删除不完整观测。
 - 不会把自动校验通过当作视觉验收；最终交付仍需逐面板检查不确定性、标签碰撞、间距和显著性层级。

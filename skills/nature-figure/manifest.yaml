@@ -1,5 +1,5 @@
 name: nature-figure
-version: 2.4.0
+version: 2.6.0
 description: >
   Declarative manifest for the static/dynamic split. SKILL.md uses this to
   decide which fragments to load for a given figure request. The main axis is
@@ -14,6 +14,14 @@ always_load:
   - static/core/stance.md
 
 routes:
+  graphical_abstract_workflow:
+    detect: |
+      Use this route whenever AI assists the planning, generation, revision, or
+      audit of a graphical abstract. Planning and audit-only tasks do not need
+      the Python/R backend gate. The reference owns the policy check,
+      message/audience brief, visual design workflow, human verification,
+      disclosure boundary, and provenance record.
+    reference: references/ai-graphical-abstract-workflow.md
   openrouter_image_generation:
     detect: |
       Use this route only when the user explicitly asks for OpenRouter, GPT
@@ -55,6 +63,8 @@ references:
   on_demand:
     - condition: convert a user request into core conclusion, evidence hierarchy, panel map, and review-risk checks
       path: references/figure-contract.md
+    - condition: plan, restructure, or audit a multi-panel manuscript figure; decide panel roles or main-versus-Extended-Data placement; or align figure order with a Results evidence chain
+      path: references/multipanel-evidence-architecture.md
     - condition: user has not chosen Python/R, asks for a recommendation, or a mixed Python/R workflow is possible
       path: references/backend-selection.md
     - condition: user chooses R or provides R scripts/templates/data
@@ -79,6 +89,8 @@ references:
       path: references/nature-2026-observations.md
     - condition: "OpenRouter/GPT Image 2 route: AI-generated graphical abstracts, mechanism diagrams, paper schematics, or concept illustrations"
       path: references/openrouter-image-generation.md
+    - condition: AI-assisted graphical abstract planning, generation, revision, audit, journal-policy check, scientific verification, disclosure, or provenance
+      path: references/ai-graphical-abstract-workflow.md
     - condition: writing or auditing figure/table legend text — Fig. N | title, panel style, stats in legend, Source Data boilerplate, attribution; load the flagship Nature requirements too when that is the target journal
       path: references/figure-legend-conventions.md
     - condition: "end-to-end walkthroughs: bars, trends, heatmaps"
