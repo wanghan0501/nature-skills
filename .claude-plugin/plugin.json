@@ -1,6 +1,6 @@
 {
   "name": "nature-skills",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Nature-style academic research toolkit: literature search & citation, publication figures, manuscript writing & polishing, peer-review simulation, response letters, full-text readers, and paper-to-PPT/patent conversion. Skills auto-load from skills/nature-*/SKILL.md.",
   "author": {
     "name": "wanghan0501",
