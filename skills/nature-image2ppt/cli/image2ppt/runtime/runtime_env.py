@@ -9,16 +9,25 @@ import json
 import os
 import platform
 import shutil
-import stat
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
 DEFAULT_CONFIG_HOME = "~/.image2ppt"
 DEFAULT_CODEX_AUTH_FILE = "~/.codex/auth.json"
 DEFAULT_IMAGE_MODEL = "gpt-image-2"
-ENV_FIELDS = ("OPENAI_API_KEY", "OPENAI_BASE_URL", "IMAGE2PPT_IMAGE_MODEL", "PADDLE_OCR_TOKEN")
+DEFAULT_IMAGE_BACKEND = "auto"
+ALLOWED_IMAGE_BACKENDS = {"auto", "codex-oauth", "openai-compatible-api"}
+ENV_FIELDS = (
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "IMAGE2PPT_IMAGE_MODEL",
+    "IMAGE2PPT_IMAGE_BACKEND",
+    "IMAGE2PPT_IMAGE_USER_AGENT",
+    "PADDLE_OCR_TOKEN",
+)
 PADDLE_TOKEN_APPLY_URL = "https://aistudio.baidu.com/account/accessToken"
 PADDLE_ENDPOINT = "https://paddleocr.aistudio-app.com/api/v2/ocr/jobs"
 PADDLE_MODEL = "PaddleOCR-VL-1.6"
@@ -90,9 +99,22 @@ def write_config_file(path: Path, values: dict) -> None:
     except ImportError as exc:
         raise SystemExit(f"PyYAML is required to write Image2PPT config. Install with {cli_reinstall_hint()}.") from exc
     data = {key: values[key] for key in ENV_FIELDS if values.get(key)}
-    fd = os.open(str(path), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, stat.S_IRUSR | stat.S_IWUSR)
-    with os.fdopen(fd, "w", encoding="utf-8") as handle:
-        yaml.safe_dump(data, handle, allow_unicode=True, sort_keys=True)
+    fd, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    try:
+        os.chmod(temp_name, 0o600)
+        handle = os.fdopen(fd, "w", encoding="utf-8")
+        fd = -1
+        with handle:
+            yaml.safe_dump(data, handle, allow_unicode=True, sort_keys=True)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp_name, path)
+        os.chmod(path, 0o600)
+    finally:
+        if fd >= 0:
+            os.close(fd)
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
 
 
 def mask_secret(value: str) -> str:
@@ -119,6 +141,24 @@ def codex_oauth_ready() -> bool:
     return isinstance(tokens, dict) and bool(str(tokens.get("access_token") or "").strip())
 
 
+def codex_model_compatible(model: str) -> bool:
+    return "gpt-image-" in str(model).lower()
+
+
+def select_image_backend(values: dict, codex_ready: bool, api_ready: bool) -> tuple[str, bool]:
+    preference = str(values.get("IMAGE2PPT_IMAGE_BACKEND") or DEFAULT_IMAGE_BACKEND).strip().lower()
+    if preference not in ALLOWED_IMAGE_BACKENDS:
+        return "invalid", False
+    model = str(values.get("IMAGE2PPT_IMAGE_MODEL") or DEFAULT_IMAGE_MODEL)
+    if preference == "codex-oauth":
+        return "codex-oauth", bool(codex_ready and codex_model_compatible(model))
+    if preference == "openai-compatible-api":
+        return "openai-compatible-api", api_ready
+    if codex_ready and codex_model_compatible(model):
+        return "codex-oauth", True
+    return "openai-compatible-api", api_ready
+
+
 def config(args: argparse.Namespace) -> int:
     home = runtime_home()
     values = read_config_file(config_path(home))
@@ -131,6 +171,17 @@ def config(args: argparse.Namespace) -> int:
         values.pop("OPENAI_BASE_URL", None)
     if args.model is not None:
         values["IMAGE2PPT_IMAGE_MODEL"] = args.model.strip()
+    if args.image_backend is not None:
+        backend = args.image_backend.strip().lower()
+        if backend not in ALLOWED_IMAGE_BACKENDS:
+            raise SystemExit(
+                "--image-backend must be auto, codex-oauth, or openai-compatible-api"
+            )
+        values["IMAGE2PPT_IMAGE_BACKEND"] = backend
+    if args.image_user_agent is not None:
+        values["IMAGE2PPT_IMAGE_USER_AGENT"] = args.image_user_agent.strip()
+    if args.clear_image_user_agent:
+        values.pop("IMAGE2PPT_IMAGE_USER_AGENT", None)
     if args.paddle_ocr_token:
         values["PADDLE_OCR_TOKEN"] = args.paddle_ocr_token.strip()
     changed = sorted(key for key in ENV_FIELDS if before.get(key) != values.get(key))
@@ -267,7 +318,7 @@ def collect_status(check_api: bool = False, check_ocr: bool = False) -> dict:
     resources = internal_resource_status()
     api_ready = bool(values.get("OPENAI_API_KEY"))
     codex_ready = codex_oauth_ready()
-    cli_fallback_ready = codex_ready or api_ready
+    selected_backend, cli_fallback_ready = select_image_backend(values, codex_ready, api_ready)
     token = str(values.get("PADDLE_OCR_TOKEN") or "").strip()
     token_source = "environment" if os.getenv("PADDLE_OCR_TOKEN") else ("config" if token else "unset")
     offline_ready = modules["PIL"]["available"] and modules["numpy"]["available"]
@@ -316,9 +367,11 @@ def collect_status(check_api: bool = False, check_ocr: bool = False) -> dict:
                 "OPENAI_API_KEY": "set" if api_ready else "unset",
                 "OPENAI_BASE_URL": values.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
                 "IMAGE2PPT_IMAGE_MODEL": values.get("IMAGE2PPT_IMAGE_MODEL", DEFAULT_IMAGE_MODEL),
+                "IMAGE2PPT_IMAGE_USER_AGENT": values.get("IMAGE2PPT_IMAGE_USER_AGENT", "<default>"),
             },
+            "preference": values.get("IMAGE2PPT_IMAGE_BACKEND", DEFAULT_IMAGE_BACKEND),
             "cli_fallback_ready": cli_fallback_ready,
-            "selection": "codex-oauth" if codex_ready else ("openai-compatible-api" if api_ready else "missing"),
+            "selection": selected_backend,
         },
         "checks_requested": {"require_image_api": check_api, "require_network_ocr_token": check_ocr},
         "next": "no action needed" if ok else "inspect failed doctor sections and install/configure only the missing local or system dependency",
@@ -368,7 +421,18 @@ def main() -> None:
     cfg.add_argument("--api-key", help="OpenAI or OpenAI-compatible image API key to store.")
     cfg.add_argument("--base-url", help="OpenAI-compatible base URL.")
     cfg.add_argument("--clear-base-url", action="store_true", help="Remove OPENAI_BASE_URL from the config file.")
-    cfg.add_argument("--model", help="Default image model for API fallback.")
+    cfg.add_argument("--model", help="Default provider image model id.")
+    cfg.add_argument(
+        "--image-backend",
+        choices=sorted(ALLOWED_IMAGE_BACKENDS),
+        help="Default transport backend for image generate/edit calls.",
+    )
+    cfg.add_argument("--image-user-agent", help="Optional User-Agent for the OpenAI-compatible API only.")
+    cfg.add_argument(
+        "--clear-image-user-agent",
+        action="store_true",
+        help="Remove IMAGE2PPT_IMAGE_USER_AGENT from the config file.",
+    )
     cfg.add_argument("--paddle-ocr-token", help=f"Baidu AI Studio PaddleOCR token. Apply at {PADDLE_TOKEN_APPLY_URL}.")
     cfg.set_defaults(func=config)
     args = parser.parse_args()
