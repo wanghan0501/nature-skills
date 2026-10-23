@@ -9,6 +9,7 @@ on:
       - 'skills/nature-figure/**'
       - 'skills/nature-image2ppt/**'
       - 'skills/nature-paper-card/**'
+      - 'skills/nature-proposal-writer/**'
       - 'skills/nature-paper-to-patent/**'
       - 'skills/nature-response/**'
       - 'skills/nature-reviewer/**'
@@ -17,6 +18,8 @@ on:
       - 'scripts/autoupdate-skills.sh'
       - 'scripts/tests/test-autoupdate-state-isolation.sh'
       - 'scripts/tests/test-update-codex-skills-safety.sh'
+      - 'scripts/tests/test-update-codex-skills-dest-tilde.sh'
+      - 'scripts/tests/test-autoupdate-dest-tilde.sh'
       - '.github/requirements-ci.txt'
       - '.github/workflows/test-skill-tooling.yml'
   push:
@@ -29,6 +32,7 @@ on:
       - 'skills/nature-figure/**'
       - 'skills/nature-image2ppt/**'
       - 'skills/nature-paper-card/**'
+      - 'skills/nature-proposal-writer/**'
       - 'skills/nature-paper-to-patent/**'
       - 'skills/nature-response/**'
       - 'skills/nature-reviewer/**'
@@ -37,6 +41,8 @@ on:
       - 'scripts/autoupdate-skills.sh'
       - 'scripts/tests/test-autoupdate-state-isolation.sh'
       - 'scripts/tests/test-update-codex-skills-safety.sh'
+      - 'scripts/tests/test-update-codex-skills-dest-tilde.sh'
+      - 'scripts/tests/test-autoupdate-dest-tilde.sh'
       - '.github/requirements-ci.txt'
       - '.github/workflows/test-skill-tooling.yml'
   workflow_dispatch:
@@ -101,6 +107,10 @@ jobs:
         working-directory: skills/nature-paper-card
         run: python -m pytest -q tests
 
+      - name: Test nature-proposal-writer
+        working-directory: skills/nature-proposal-writer
+        run: python -m pytest -q tests
+
       - name: Test nature-paper-to-patent
         working-directory: skills/nature-paper-to-patent
         run: python -m pytest -q tests
@@ -159,6 +169,9 @@ jobs:
           tests/test_quality_contracts.py
           tests/test_path_confinement.py
           tests/test_visual_review_evidence.py
+          tests/test_migration_parity.py
+          tests/test_ocr_http.py
+          tests/test_paddle_result_url_safety.py
 
   javascript-tests:
     runs-on: ubuntu-latest
@@ -187,6 +200,8 @@ jobs:
           bash -n scripts/update-codex-skills.sh
           bash scripts/tests/test-autoupdate-state-isolation.sh
           bash scripts/tests/test-update-codex-skills-safety.sh
+          bash scripts/tests/test-update-codex-skills-dest-tilde.sh
+          bash scripts/tests/test-autoupdate-dest-tilde.sh
           bash scripts/update-codex-skills.sh --dest "$TEST_DEST"
           bash scripts/update-codex-skills.sh --dest "$TEST_DEST" --check
           touch "$TEST_DEST/nature-writing/unexpected-drift-file"

@@ -5,7 +5,7 @@
   <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-2ea44f"></a>
     <a href="#5-installation"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw%20%7C%20OpenCode%20%7C%20Hermes-111827"></a>
-    <a href="#6-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-19-0ea5e9"></a>
+    <a href="#6-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-22-0ea5e9"></a>
     <a href="README.md"><img alt="Language" src="https://img.shields.io/badge/language-English%20%7C%20中文-1f6feb"></a>
   </p>
   <p>
@@ -574,6 +574,8 @@ The current `skills/` directory contains the following triggerable skills.
 | [`nature-data`](skills/nature-data/README_EN.md) | Draft | Prepare Data Availability statements, data repository plans, and FAIR checks | "Data Availability", "data availability", "repository", "FAIR metadata" | [Details](skills/nature-data/README_EN.md) |
 | [`nature-statistics`](skills/nature-statistics/README_EN.md) | Draft | Audit, revise, or draft statistical reporting, covering experimental units, replicates, p values, multiple comparisons, effect sizes, confidence intervals, figure statistics, and cross-section numeric consistency | "Nature statistics", "statistical analysis", "p value", "sample size", "replicates", "multiple comparisons", "figure statistics", "statistics review" | [Details](skills/nature-statistics/README_EN.md) |
 | [`nature-reader`](skills/nature-reader/README_EN.md) | Beta | Generate full-paper Markdown readers with source anchors, figure-text alignment, rendered equations, and Chinese-English side-by-side translation | "nature reader", "full Markdown", "source-aligned text", "figure-text alignment", "rendered equations", "full translation" | [Details](skills/nature-reader/README_EN.md) |
+| [`nature-paper-xray`](skills/nature-paper-xray/README_EN.md) | Beta | Read one paper closely enough to retell the authors' reasoning: the real starting point, load-bearing versus decorative design, formulas grounded in worked examples, and the evidence boundary | "paper x-ray", "close reading", "deep read", "how did the authors get here", "explain this paper" | [Details](skills/nature-paper-xray/README_EN.md) |
+| [`nature-paper-trans`](skills/nature-paper-trans/README_EN.md) | Beta | Translate a full English paper PDF or selected pages into a Chinese image-based PDF after page comparison, preserving source sizes; A4 on request | "paper translation", "translate paper PDF", "nature paper trans" | [Details](skills/nature-paper-trans/README_EN.md) |
 | [`nature-paper-card`](skills/nature-paper-card/README_EN.md) | Beta | Deep-read one paper into a source-grounded Sections 01–16 Paper Card covering method logic, experiment-to-claim evidence, conclusion boundaries, critical analysis, and testable research ideas | "nature paper card", "deep-read paper", "Paper Card", "evidence chain", "conclusion boundaries" | [Details](skills/nature-paper-card/README_EN.md) |
 | [`nature-response`](skills/nature-response/README_EN.md) | Beta | Parse revision emails; create separate mutually blind reviewer responses, cover letters, red-marked manuscripts, LaTeX templates, and revision-package consistency checks | "response to reviewers", "rebuttal letter", "cover letter", "major revision", "revision email", "reviewer-comment response", "LaTeX template" | [Details](skills/nature-response/README_EN.md) |
 | [`nature-paper2ppt`](skills/nature-paper2ppt/README_EN.md) | Beta | Generate Chinese PPTX journal-club or paper-presentation decks from research papers | "paper PPT", "journal club", "paper to slides", "paper presentation" | [Details](skills/nature-paper2ppt/README_EN.md) |
@@ -585,6 +587,7 @@ The current `skills/` directory contains the following triggerable skills.
 | [`nature-literature-pipeline`](skills/nature-literature-pipeline/README_EN.md) | Stable | Automated literature discovery pipeline: multi-source retrieval, six-axis scoring, deep-reading delivery, and local archiving | "literature pipeline", "daily literature", "literature push", "daily literature push", "cron" | [Details](skills/nature-literature-pipeline/README_EN.md) |
 | [`nature-experiment-log`](skills/nature-experiment-log/README_EN.md) | Draft | Standardize experiment images, voice, and text into Obsidian experiment logs with YAML frontmatter and archived source materials | "experiment log", "record experiment", "Obsidian vault", "Feishu research group" | [Details](skills/nature-experiment-log/README_EN.md) |
 | [`nature-proposal-writer`](skills/nature-proposal-writer/README_EN.md) | Beta | Proposal-first research writing state machine: establish evidence, argument, and section contracts before drafting or reviewing text | "researchwrite", "proposal", "opening report", "research plan", "research writing QA" | [Details](skills/nature-proposal-writer/README_EN.md) |
+| [`nature-social-science`](skills/nature-social-science/README_EN.md) | Draft | Social-science and adjacent-humanities writing and topic-argumentation workbench: topic development, literature landscape, evidence routes with claim ceiling, novelty audit, feasibility assessment, honest-expression self-check | "social science paper", "topic development", "research question", "literature review", "proposal", "overclaiming" | [Details](skills/nature-social-science/README_EN.md) |
 
 ## 7. Contribution and Development
 
@@ -752,4 +755,4 @@ After adding a skill, update the [Skill Index](#6-skill-index) table:
 
 ## 8. Star History
 
-[![Star History Chart](assets/star-history-20260916T024247Z.svg)](https://star-history.com/#Yuan1z0825/nature-skills&Date)
+[![Star History Chart](assets/star-history-20261022T024032Z.svg)](https://star-history.com/#Yuan1z0825/nature-skills&Date)
