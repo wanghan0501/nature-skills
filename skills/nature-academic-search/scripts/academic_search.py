@@ -9,7 +9,9 @@ the MCP server (plain CLI use, skill auto-discovery, CI). It mirrors what
 `nature-citation/scripts/nature_citation.py` already does for CrossRef: a single
 self-contained file hitting a public HTTP API with no third-party dependencies.
 
-Source: OpenAlex (https://openalex.org) — free, no API key. OpenAlex indexes
+Source: OpenAlex (https://openalex.org). Basic queries work without a key, but
+since 2026 OpenAlex meters usage per API key (a free key raises the daily budget
+10x) and no longer uses the `mailto` polite pool. OpenAlex indexes
 CrossRef, PubMed and arXiv-deposited works, so one endpoint covers journals,
 preprints and most of the T1/T2/T3 sources for *discovery*. Pair it with
 `format-converter.py` to download/convert the chosen DOIs/PMIDs into
@@ -32,8 +34,10 @@ Usage:
     # By exact author ID (skip name resolution)
     python3 academic_search.py --author-id A5055881494
 
-Be polite to the OpenAlex pool: pass --mailto you@example.com or set the
-OPENALEX_MAILTO / CROSSREF_MAILTO environment variable.
+API key: create a free key at https://openalex.org and pass --api-key KEY or set
+OPENALEX_API_KEY. It is sent as an `Authorization: Bearer` header, so it never
+appears in URLs or logs. --mailto / OPENALEX_MAILTO are accepted for backward
+compatibility but ignored (OpenAlex retired the polite pool).
 
 Output: JSON list of papers with title, DOI, authors, year, citation count, abstract.
 Per-source failures (HTTP 429 rate-limit, timeouts, network errors) are reported
@@ -45,6 +49,11 @@ import argparse
 import json
 import os
 import sys
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -52,8 +61,8 @@ import urllib.error
 
 OPENALEX_API = "https://api.openalex.org/works"
 AUTHORS_API = "https://api.openalex.org/authors"
-# Polite-pool contact; overridden by --mailto or OPENALEX_MAILTO / CROSSREF_MAILTO.
-MAILTO = "nature-skills@users.noreply.github.com"
+# OpenAlex API key; set from --api-key or OPENALEX_API_KEY in main(). Empty = keyless.
+API_KEY = ""
 
 # When re-ranking a query's results by citations/date, drop candidates whose
 # relevance_score is below this fraction of the top hit's score. OpenAlex's
@@ -114,12 +123,19 @@ def _cluster_summary(results: list[dict]) -> list[dict]:
     return sorted(clusters.values(), key=lambda c: -c["works_count"])
 
 
-def fetch_author_candidates(name: str, per_page: int = 50) -> list[dict]:
-    params = {"search": name, "per_page": per_page, "mailto": MAILTO}
-    url = f"{AUTHORS_API}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+def _get_json(url: str) -> dict:
+    """GET an OpenAlex URL, authenticating with the API key when one is set."""
+    headers = {"Accept": "application/json"}
+    if API_KEY:
+        headers["Authorization"] = f"Bearer {API_KEY}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=30) as resp:
-        data = json.loads(resp.read().decode())
+        return json.loads(resp.read().decode())
+
+
+def fetch_author_candidates(name: str, per_page: int = 50) -> list[dict]:
+    params = {"search": name, "per_page": per_page}
+    data = _get_json(f"{AUTHORS_API}?{urllib.parse.urlencode(params)}")
     return data.get("results", [])
 
 
@@ -185,11 +201,8 @@ def resolve_by_orcid(orcid: str) -> dict | None:
     # records carry; reject it so it can't resolve to whoever holds that junk tag.
     if set(oid) <= {"0", "-"}:
         return None
-    params = {"filter": f"orcid:{oid}", "mailto": MAILTO}
-    url = f"{AUTHORS_API}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        data = json.loads(resp.read().decode())
+    params = {"filter": f"orcid:{oid}"}
+    data = _get_json(f"{AUTHORS_API}?{urllib.parse.urlencode(params)}")
     results = data.get("results", [])
     # Defensive: only keep records that actually carry the requested ORCID, so a
     # server-side filter miss can't resolve to an unrelated author. OpenAlex
@@ -207,8 +220,25 @@ def resolve_by_orcid(orcid: str) -> dict | None:
     }
 
 
+def _normalise_date(value: str) -> str:
+    """Coerce a date argument to the YYYY-MM-DD OpenAlex expects.
+
+    Accepts YYYY-MM-DD, YYYY/MM/DD, or a bare YYYY (which OpenAlex treats as
+    YYYY-01-01). Raises ValueError on anything else so a malformed argument
+    fails loudly instead of silently widening the window.
+    """
+    text = value.strip().replace("/", "-")
+    parts = text.split("-")
+    if len(parts) == 1 and len(parts[0]) == 4 and parts[0].isdigit():
+        return f"{parts[0]}-01-01"
+    if len(parts) == 3 and all(p.isdigit() for p in parts):
+        return f"{int(parts[0]):04d}-{int(parts[1]):02d}-{int(parts[2]):02d}"
+    raise ValueError(f"Invalid date {value!r}; expected YYYY-MM-DD")
+
+
 def search(query: str | None = None, limit: int = 10, year_from: int | None = None,
-           sort: str = "relevance_score", author_id: str | None = None) -> list[dict]:
+           sort: str = "relevance_score", author_id: str | None = None,
+           date_from: str | None = None, date_to: str | None = None) -> list[dict]:
     # A text query is ranked by relevance. Asking OpenAlex to sort that query by
     # cited_by_count / publication_date *server-side* discards relevance entirely
     # and surfaces off-topic mega-cited (or merely newest) papers that only loosely
@@ -221,7 +251,6 @@ def search(query: str | None = None, limit: int = 10, year_from: int | None = No
 
     params = {
         "per_page": per_page,
-        "mailto": MAILTO,
     }
     if query:
         params["search"] = query
@@ -235,6 +264,15 @@ def search(query: str | None = None, limit: int = 10, year_from: int | None = No
     filters = []
     if year_from:
         filters.append(f"from_publication_date:{year_from}-01-01")
+    # Explicit date window (YYYY-MM-DD). OpenAlex filters natively, so a caller
+    # that needs "papers published since <date>" gets a correct window instead of
+    # a relevance pool that merely happens to contain recent work. An explicit
+    # from-date supersedes the coarser year_from.
+    if date_from:
+        filters = [f for f in filters if not f.startswith("from_publication_date:")]
+        filters.append(f"from_publication_date:{_normalise_date(date_from)}")
+    if date_to:
+        filters.append(f"to_publication_date:{_normalise_date(date_to)}")
     if author_id:
         # Accept a bare ID, a full URL, or an OR-list; normalise each segment.
         ids = "|".join(p.rsplit("/", 1)[-1] for p in author_id.split("|"))
@@ -242,17 +280,18 @@ def search(query: str | None = None, limit: int = 10, year_from: int | None = No
     if filters:
         params["filter"] = ",".join(filters)
 
-    url = f"{OPENALEX_API}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        data = json.loads(resp.read().decode())
+    data = _get_json(f"{OPENALEX_API}?{urllib.parse.urlencode(params)}")
 
     results = []
     for work in data.get("results", []):
-        authors = [
-            a.get("author", {}).get("display_name", "")
-            for a in work.get("authorships", [])
-        ]
+        authors = []
+        for authorship in work.get("authorships", []):
+            # Bibliographies use the name on this work, not the resolved person.
+            raw_name = authorship.get("raw_author_name")
+            if isinstance(raw_name, str) and raw_name.strip():
+                authors.append(raw_name.strip())
+            else:
+                authors.append((authorship.get("author") or {}).get("display_name", ""))
         doi = work.get("doi", "")
         if doi and doi.startswith("https://doi.org/"):
             doi = doi[len("https://doi.org/"):]
@@ -318,20 +357,27 @@ def main():
                         help="Filter by exact OpenAlex author ID(s), e.g. A5055881494 (OR-join with '|')")
     parser.add_argument("--limit", type=int, default=10, help="Number of results (max 50)")
     parser.add_argument("--year-from", type=int, default=None, help="Filter papers from this year")
+    parser.add_argument("--date-from", default=None, metavar="YYYY-MM-DD",
+                        help="Only papers published on/after this date (OpenAlex "
+                             "from_publication_date). Supersedes --year-from when both are given")
+    parser.add_argument("--date-to", default=None, metavar="YYYY-MM-DD",
+                        help="Only papers published on/before this date "
+                             "(OpenAlex to_publication_date)")
     parser.add_argument("--sort", default="relevance_score",
                         choices=["relevance_score", "cited_by_count", "publication_date"],
                         help="Sort order. With a query, cited_by_count/publication_date "
                              "re-rank within the relevance-matched pool (not the whole DB)")
+    parser.add_argument("--api-key", default=None,
+                        help="OpenAlex API key (falls back to OPENALEX_API_KEY env); "
+                             "sent as a Bearer header")
     parser.add_argument("--mailto", default=None,
-                        help="Contact email for the OpenAlex polite pool "
-                             "(falls back to OPENALEX_MAILTO / CROSSREF_MAILTO env)")
+                        help="Deprecated and ignored: OpenAlex retired the mailto polite pool")
     parser.add_argument("--compact", action="store_true", help="Compact output (one line per paper)")
     args = parser.parse_args()
 
-    # Resolve the polite-pool contact: --mailto > OPENALEX_MAILTO > CROSSREF_MAILTO > default.
-    global MAILTO
-    MAILTO = (args.mailto or os.environ.get("OPENALEX_MAILTO")
-              or os.environ.get("CROSSREF_MAILTO") or MAILTO)
+    # Resolve the API key: --api-key > OPENALEX_API_KEY. Empty means keyless.
+    global API_KEY
+    API_KEY = (args.api_key or os.environ.get("OPENALEX_API_KEY") or "").strip()
 
     if (not args.query and not args.author and not args.author_id
             and not args.orcid and not args.list_authors):
@@ -403,9 +449,16 @@ def main():
               file=sys.stderr)
 
     try:
-        results = search(args.query, args.limit, args.year_from, args.sort, author_id)
+        results = search(args.query, args.limit, args.year_from, args.sort, author_id,
+                         date_from=args.date_from, date_to=args.date_to)
     except urllib.error.HTTPError as e:
-        hint = " (429 = rate-limited; retry later or lower --limit)" if e.code == 429 else ""
+        if e.code in (401, 403):
+            hint = " (API key missing or invalid: set OPENALEX_API_KEY or pass --api-key)"
+        elif e.code == 429:
+            hint = (" (429 = rate-limited or daily budget used up; retry later, lower --limit, "
+                    "or set OPENALEX_API_KEY / --api-key for a 10x larger budget)")
+        else:
+            hint = ""
         print(f"ERROR: OpenAlex returned HTTP {e.code}: {e.reason}{hint}", file=sys.stderr)
         return 1
     except (urllib.error.URLError, TimeoutError, OSError) as e:
